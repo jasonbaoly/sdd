@@ -62,7 +62,7 @@ cp -r /path/to/sdd your-project/sdd
 ## 使用流程
 
 1. 在项目 `CLAUDE.md` 中引用 `@sdd/SDD.md`，使规则生效。
-2. 按 `SDD.md` 流程从 `sdd/templates/` 复制对应模板，依次产出 spec → plan → tasks。
-3. 编码阶段先阅读当前 task 对应的三件套，再开始实现。
+2. 直接向 AI 描述需求，AI 会按 `SDD.md` 流程自动澄清需求、套用 `sdd/templates/` 下的模板、依次产出 `specs/{NNN}-{feature}/` 下的 spec → plan → tasks，并在每一步与你对齐。
+3. AI 编码前会先阅读当前 task 对应的三件套，再开始实现并跑验收。
 
 详细流程、通道划分（标准 / 轻量）、偏离处理（Living Specs）参见 [SDD.md](./SDD.md)。
