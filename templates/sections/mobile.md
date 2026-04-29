@@ -59,13 +59,17 @@
 
 ### 5.7 验收命令参考（供 tasks.md 填写验收行时选用）
 
-| 类型 | iOS 命令 / 方式 |
-|------|----------------|
-| 编译通过 | `xcodebuild -project {Project}.xcodeproj -scheme {Scheme} -sdk iphonesimulator build` |
-| 单元 / UI 测试 | `xcodebuild test -project {Project}.xcodeproj -scheme {Scheme} -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17'` |
-| 静态检查 | `swift build` / `swiftc -typecheck` / SwiftLint（若引入） |
-| 视觉还原 | 模拟器截图对照 `specs/screens/assets/XX.png` 逐项核对（不得只用 "Preview 渲染正常" 兜底） |
-| 真机行为 | 仅用于权限弹窗 / 推送 / 相机 等模拟器不支持的场景，需在 Task 验收中标明 "真机手测" |
+按项目实际栈选对应栏。多栈仓库（如 Flutter 项目同时跑 iOS / Android）两栏都要覆盖。
+
+| 类型 | iOS（SwiftUI / UIKit） | Flutter | Android 原生（Compose / View） |
+|------|------------------------|---------|-------------------------------|
+| 编译通过 | `xcodebuild -project {Project}.xcodeproj -scheme {Scheme} -sdk iphonesimulator build` | `flutter build ios --debug --no-codesign`（iOS 输出）/ `flutter build apk --debug`（Android 输出） | `./gradlew :app:assembleDebug` |
+| 单元 / UI 测试 | `xcodebuild test -project {Project}.xcodeproj -scheme {Scheme} -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17'` | `flutter test`（widget / unit）/ `flutter test integration_test`（端到端） | `./gradlew :app:testDebugUnitTest` / `./gradlew :app:connectedDebugAndroidTest` |
+| 静态检查 | `swift build` / `swiftc -typecheck` / SwiftLint（若引入） | `flutter analyze`（必跑）/ `dart format --output=none --set-exit-if-changed .`（CI 模式） | `./gradlew :app:lintDebug` / ktlint（若引入） |
+| 视觉还原 | 模拟器截图对照 `specs/screens/assets/XX.png` 逐项核对（不得只用 "Preview 渲染正常" 兜底） | `flutter run -d <device-id>` 启动后 `flutter screenshot --type=device` 抓图，与 `specs/screens/assets/XX.png` 像素级对照 | `adb shell screencap` 抓图后对照 `specs/screens/assets/XX.png` |
+| 真机行为 | 仅用于权限弹窗 / 推送 / 相机 等模拟器不支持的场景，需在 Task 验收中标明 "真机手测" | 同左：相机、推送、生物识别、深链等需真机手测；Flutter `flutter run -d <real-device-id>` 抓现象 | 同左 |
+
+> Flutter 项目的视觉还原同样禁止只用 "热重载看着像" 兜底——必须截图后与 PNG 对照，2pt 误差是上限。
 
 ### 5.8 视觉源（涉及 UI 还原时必填，填入 plan.md 的"领域设计"章节）
 
